@@ -49,7 +49,9 @@ floating_modifier $mod
 tiling_drag modifier titlebar
 
 # start a terminal
-bindsym $mod+Return exec i3-sensible-terminal
+# bindsym $mod+Return exec i3-sensible-terminal
+
+bindsym $mod+Return exec alacritty
 
 # kill focused window
 bindsym $mod+Shift+q kill
@@ -192,3 +194,9 @@ bar {
 
 # PritScreen
 bindsym Print exec flameshot gui
+
+# Brightness control
+bindsym XF86MonBrightnessUp exec --no-startup-id brightnessctl set +5%
+bindsym XF86MonBrightnessDown exec --no-startup-id brightnessctl set 5%-
+
+exec_always feh --bg-scale /home/lucapcf/Pictures/wallpaper.jpg
