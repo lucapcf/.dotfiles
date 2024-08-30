@@ -1,5 +1,5 @@
 #!/bin/bash
-
+:'
 # Function to update the wallpaper
 update_wallpaper() {
     while true; do
@@ -12,3 +12,6 @@ update_wallpaper() {
 }
 
 update_wallpaper &
+'
+
+feh --no-fehbg --bg-scale /home/lucapcf/Wallpapers/Cole_Thomas_The_Course_of_Empire_The_Arcadian_or_Pastoral_State_1836.jpg

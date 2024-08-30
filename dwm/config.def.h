@@ -15,11 +15,13 @@ static const char col_gray2[]       = "#444444";
 static const char col_gray3[]       = "#bbbbbb";
 static const char col_gray4[]       = "#eeeeee";
 static const char col_cyan[]        = "#005577";
-static const char col_blue[]       = "#009BFF";
+static const char col_blue[]        = "#009BFF";
+static const char col_green[]       = "#008800";
+
 static const char *colors[][3]      = {
 	/*               fg         bg         border   */
 	[SchemeNorm] = { col_gray3, col_gray1, col_gray2 },
-	[SchemeSel]  = { col_gray4, col_blue,  col_blue  },
+	[SchemeSel]  = { col_gray4, col_green,  col_green  },
 };
 
 /* tagging */
@@ -60,23 +62,19 @@ static const Layout layouts[] = {
 #define SHCMD(cmd) { .v = (const char*[]){ "/bin/sh", "-c", cmd, NULL } }
 
 /* commands */
-static const char *browsercmd[] = { "firefox", NULL };
-static const char *spotifycmd[] = { "com.spotify.Client", NULL };
-static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
-static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_cyan, "-sf", col_gray4, NULL };
+static char dmenumon[2]           = "0"; /* component of dmenucmd, manipulated in spawn() */
+static const char *dmenucmd[]     = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_green, "-sf", col_gray4, NULL };
 /* custom commands */
-static const char *termcmd[]  = { "alacritty", NULL };
+static const char *browsercmd[]   = { "firefox", NULL };
+static const char *spotifycmd[]   = { "com.spotify.Client", NULL };
+static const char *termcmd[]      = { "alacritty", NULL };
 static const char *flameshotcmd[] = { "flameshot", "gui", NULL };
-//static const char *mutecmd[] = { "pactl", "set-sink-mute", "0", "toggle", NULL };
-//static const char *volupcmd[] = { "pactl", "set-sink-volume", "0", "+5%", NULL };
-//static const char *voldowncmd[] = { "pactl", "set-sink-volume", "0", "-5%", NULL };
-static const char *brupcmd[] = { "xbacklight", "-inc", "10", NULL };
-static const char *brdowncmd[] = { "xbacklight", "-dec", "10", NULL };
-
-
-static const char *mutecmd[] = { "/bin/sh", "-c", "pactl set-sink-mute 0 toggle && $HOME/dwm/scripts/refresh.sh", NULL };
-static const char *voldowncmd[] = { "/bin/sh", "-c", "pactl set-sink-volume 0 -1% && $HOME/dwm/scripts/refresh.sh", NULL };
-static const char *volupcmd[] = { "/bin/sh", "-c", "pactl set-sink-volume 0 +1% && $HOME/dwm/scripts/refresh.sh", NULL };
+static const char *brupcmd[]      = { "xbacklight", "-inc", "10", NULL };
+static const char *brdowncmd[]    = { "xbacklight", "-dec", "10", NULL };
+/* volume */
+static const char *mutecmd[]      = { "/bin/sh", "-c", "pactl set-sink-mute 0 toggle && $HOME/dwm/scripts/refresh.sh", NULL };
+static const char *voldowncmd[]   = { "/bin/sh", "-c", "pactl set-sink-volume 0 -1% && $HOME/dwm/scripts/refresh.sh", NULL };
+static const char *volupcmd[]     = { "/bin/sh", "-c", "pactl set-sink-volume 0 +1% && $HOME/dwm/scripts/refresh.sh", NULL };
 
 
 static const Key keys[] = {
