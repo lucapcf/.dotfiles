@@ -1,5 +1,13 @@
 #!/bin/bash
 
+killable_sleep() {
+    # Ensure we don´t run an eventual sleep shell builtin
+    command sleep &
+    # TODO: get child pid
+    echo "$sleep_pid" > "$XDG_RUNTIME_DIR/dwm_status_sleep.pid"
+    # TODO: wait for sleep
+}
+
 # Function to get current time
 dwm_status() {
     while true; do
@@ -11,12 +19,38 @@ dwm_status() {
 	      BAT_STATUS=$(cat /sys/class/power_supply/BAT0/status)
 	
 	      # Get the volume level
-	      VOLUME=$(pactl list sinks | grep '^[[:space:]]Volume:' |     head -n $(( $SINK + 1 )) | tail -n 1 | sed -e 's,.* \([0-9][0-9]*\)%.*,\1,')
-	
-	      # Limits max volume
+	      VOLUME=$(pactl list sinks | grep '^[[:space:]]Volume:' | head -n $(( $SINK + 1 )) | tail -n 1 | sed -e 's,.* \([0-9][0-9]*\)%.*,\1,')
+        VOLUME_STATUS=" "
+
+        MUTE_STATUS=$(pactl get-sink-mute @DEFAULT_SINK@)
+	      
+        # Limits max volume
 	      if [ "$VOLUME" -gt 150 ]; then
 		        pactl set-sink-volume 0 150%
 	      fi
+
+        if [ "$VOLUME" -le 0 ] || [ "$MUTE_STATUS" == "Mute: yes" ]; then
+		        VOLUME_STATUS=" "
+	      fi
+
+        case $BAT_STATUS in
+
+          "Not charging")
+            BAT_ICON="󱉝 "
+            ;;
+
+          "Discharging")
+            BAT_ICON="󰁾"
+            ;;
+
+          "Charging")
+            BAT_ICON=" "
+            ;;
+
+          "Full")
+            BAT_ICON="󰁹 󰸞"
+            ;;
+        esac
 
 	      # Extract memory data
         TOTAL_KB=$(awk '/MemTotal:/ {print $2}' /proc/meminfo)
@@ -41,11 +75,24 @@ dwm_status() {
         TOTAL_TIME=$(bc <<< "$USER + $NICE + $SYSTEM + $IDLE")
         CPU_USAGE=$(bc <<< "scale=2; ($USER + $SYSTEM) * 100 / $TOTAL_TIME")
 
-	      # Ensure used RAM is displayed with two decimal places
+	      # Ensure CPU usage is displayed with two decimal places
         FORMATTED_CPU_USAGE=$(printf "%.2f" "$CPU_USAGE")
 
-        # Update dwm status bar
-	      xsetroot -name "   $CPU_USAGE% |   $FORMATTED_USED_GB"GB"/$TOTAL_GB"GB" |   $VOLUME |   $BAT% and $BAT_STATUS | $TIME"
+        # WIFI
+        WIFI=$(nmcli connection show --active | awk '$3 == "wifi" {print $1}')
+
+        INFO="  $WIFI |   $FORMATTED_CPU_USAGE% |   ${FORMATTED_USED_GB}GB/${TOTAL_GB}GB | $VOLUME_STATUS $VOLUME% | $BAT_ICON $BAT% | $TIME "
+
+        if [ $(($BAT)) -le 20 ] && [ "$BAT_STATUS" != "Charging" ]; then
+          xsetroot -name "                                                  "
+          sleep 1
+	        xsetroot -name "$INFO"
+          sleep 2
+          xsetroot -name "󰯈 󰚌 󰯈 󰚌 󰯈 󰚌 󰯈 󰚌 󰯈 󰚌 󰯈 󰚌 󰯈 󰚌 󰯈 󰚌 󰯈 󰚌 󰯈 󰚌 󰯈 󰚌 󰯈 󰚌 󰯈 󰚌 󰯈 󰚌 󰯈 󰚌 󰯈 󰚌 󰯈 󰚌 󰯈 󰚌 󰯈 󰚌 󰯈 󰚌 󰯈 󰚌 󰯈 󰚌 󰯈 󰚌 󰯈 󰚌 󰯈 󰚌 "
+        else 
+          # Update dwm status bar
+	        xsetroot -name "$INFO"
+        fi
 
         # Wait for 1 second before updating again
         sleep 1
