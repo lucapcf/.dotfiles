@@ -80,6 +80,10 @@ dwm_status() {
 
         # WIFI
         WIFI=$(nmcli connection show --active | awk '$3 == "wifi" {print $1}')
+        
+        if [ "$WIFI" == "" ]; then
+          WIFI="No Signal"
+        fi
 
         INFO="  $WIFI |   $FORMATTED_CPU_USAGE% |   ${FORMATTED_USED_GB}GB/${TOTAL_GB}GB | $VOLUME_STATUS $VOLUME% | $BAT_ICON $BAT% | $TIME "
 
@@ -87,7 +91,7 @@ dwm_status() {
           xsetroot -name "                                                  "
           sleep 1
 	        xsetroot -name "$INFO"
-          sleep 2
+          sleep 5
           xsetroot -name "󰯈 󰚌 󰯈 󰚌 󰯈 󰚌 󰯈 󰚌 󰯈 󰚌 󰯈 󰚌 󰯈 󰚌 󰯈 󰚌 󰯈 󰚌 󰯈 󰚌 󰯈 󰚌 󰯈 󰚌 󰯈 󰚌 󰯈 󰚌 󰯈 󰚌 󰯈 󰚌 󰯈 󰚌 󰯈 󰚌 󰯈 󰚌 󰯈 󰚌 󰯈 󰚌 󰯈 󰚌 󰯈 󰚌 󰯈 󰚌 󰯈 󰚌 "
         else 
           # Update dwm status bar

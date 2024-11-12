@@ -78,6 +78,20 @@
 "maim -s | xclip -selection clipboard -t image/png"
     Print
 
+"pavucontrol"
+    Mod4 + o
+
+"com.discordapp.Discord"
+    Mod4 + g
+
+"com.spotify.Client"
+    Mod4 + s
+
+"firefox"
+    Mod4 + y
+
+"dolphin"
+    Mod4 + p
 
 #"xterm -geom 50x20+20+20"
 #   Shift+Mod2+alt + s
