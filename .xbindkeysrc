@@ -93,6 +93,9 @@
 "dolphin"
     Mod4 + p
 
+"alacritty"
+    Mod4 + Return
+
 #"xterm -geom 50x20+20+20"
 #   Shift+Mod2+alt + s
 #

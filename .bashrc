@@ -5,12 +5,20 @@
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
 
+# Running start menu
+if [ -z "$DISPLAY" ] && [ "$XDG_VTNR" = 1 ]; then
+  ~/scripts/start_menu.sh
+fi
+
 # Unlimited shell history
 export HISTFILESIZE=
 export HISTSIZE=
 
 # Recording time
 HISTTIMEFORMAT="%d/%m/%y %T "
+
+# Appends every executed command to shell history (fix for multiple simultaneous terminals)
+export PROMPT_COMMAND='history -a'
 
 # Default Browser
 export BROWSER=/usr/bin/firefox

@@ -4,24 +4,38 @@
 #
 # Executed by startx (run your window manager from here)
 
-# Keybinds
+# Redirect stdout and stderr to a log file
+exec &> ~/startx.log
+
+# Keybinds (common to all WMs)
 xbindkeys &
 
-# Starting compositor
-exec picom -f &
+# Default session is kde-wayland if none is provided as an argument
+session=${1:-'kde-x11'}
 
-# Setting wallpaper
-~/.fehbg_fixed &
+case $session in
+  dwm)
+    # Starting compositor
+    picom -f &
 
-# Lockscreen
-~/xssstate/xsidle.sh slock &
+    # Setting wallpaper
+    ~/scripts/.fehbg_fixed &
 
-# Starting DWM status
-~/dwm/scripts/status.sh &
+    # Lockscreen
+    ~/xssstate/xsidle.sh slock &
 
-# Starting DWM
-exec dwm
+    # Starting DWM status
+    ~/dwm/scripts/status.sh &
 
-# Window managers and Desktop Environments options
-#exec startplasma-x11
-#exec i3
+    # Start DWM
+    exec dwm
+    ;;
+  kde-x11)
+    exec startplasma-x11
+    ;;
+  # No known session, try to run it as a command
+  *)
+    exec $1
+    ;;
+esac
+
