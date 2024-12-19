@@ -1,0 +1,4 @@
+#!/bin/bash
+
+pkill -f .fehbg_slideshow
+feh --no-fehbg --bg-fill /home/lucapcf/Wallpapers/fixed/*

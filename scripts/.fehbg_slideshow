@@ -1,0 +1,16 @@
+#!/bin/bash
+
+pkill -f .fehbg_fixed
+
+# Function to update the wallpaper
+update_wallpaper() {
+    while true; do
+        for image in /home/lucapcf/Wallpapers/*; do
+            feh --no-fehbg --bg-fill "$image"
+            # Wait for 30 seconds before changing to the next wallpaper
+            sleep 30
+        done
+    done
+}
+
+update_wallpaper &

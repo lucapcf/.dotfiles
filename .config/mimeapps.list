@@ -1,0 +1,15 @@
+[Added Associations]
+#application/pdf=/home/lucapcf/.local/share/applications/firefox-6.desktop;
+application/pdf=firefox.desktop;
+application/toml=kate-2.desktop;
+image/png=vlc-2.desktop;xdg-open-2.desktop;xdg-open.desktop;
+text/plain=/home/lucapcf/.local/share/applications/nvim-2.desktop;
+
+[Default Applications]
+application/pdf=firefox.desktop
+application/toml=kate-2.desktop;
+image/png=vlc-2.desktop;
+text/html=firefox.desktop
+text/plain=/home/lucapcf/.local/share/applications/nvim-2.desktop;
+x-scheme-handler/http=firefox.desktop
+x-scheme-handler/https=firefox.desktop
