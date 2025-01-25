@@ -26,7 +26,7 @@ case $session in
 
     # Lockscreen
     ~/xssstate/xsidle.sh slock &
-    xset s 600
+    xset s 900
 
     # Starting DWM status
     ~/dwm/scripts/status.sh &

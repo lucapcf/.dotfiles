@@ -77,10 +77,6 @@ get_wifi() {
 get_network_usage() {
     # Detect the active network interface (excluding loopback and inactive interfaces)
     local interface=$(ip route | grep default | awk '{print $5}')
-    
-    # Fetch new values
-    #rx_new=$(awk -v iface="$interface" '$1 ~ iface {print $2}' /proc/net/dev)
-    #tx_new=$(awk -v iface="$interface" '$1 ~ iface {print $10}' /proc/net/dev)
 
     # Check if no interface was detected
     if [ -z "$interface" ]; then
@@ -90,24 +86,64 @@ get_network_usage() {
     
     local rx_new=$(cat /sys/class/net/$interface/statistics/rx_bytes)
     local tx_new=$(cat /sys/class/net/$interface/statistics/tx_bytes)
-    # Calculate RX and TX rates in bytes per second
-    local rx_rate=$(( (rx_new - rx_old) / 1024 ))
-    local tx_rate=$(( (tx_new - tx_old) / 1024 ))
-    
-    rx_old=$rx_new
-    tx_old=$tx_new
 
-    # Return formatted output
-    echo " ${rx_rate}KB/s  ${tx_rate}KB/s"
+    # Read old values from files, or initialize if they don't exist
+    local rx_old=$(cat "$1" 2>/dev/null)
+    local tx_old=$(cat "$2" 2>/dev/null)
+
+    local rx_rate=$(echo "scale=2; ($rx_new - $rx_old)" | bc)
+    local tx_rate=$(echo "scale=2; ($tx_new - $tx_old)" | bc)
+    
+    local rx_unit="B/s"
+    local tx_unit="B/s"
+
+    # Convert RX rate to appropriate units (KB/s, MB/s, GB/s)
+    if (( $(echo "$rx_rate > 1024" | bc -l) )); then
+        rx_rate=$(echo "scale=2; $rx_rate / 1024" | bc)
+        rx_unit="KB/s"
+    fi
+    if (( $(echo "$rx_rate > 1024" | bc -l) )); then
+        rx_rate=$(echo "scale=2; $rx_rate / 1024" | bc)
+        rx_unit="MB/s"
+    fi
+    if (( $(echo "$rx_rate > 1024" | bc -l) )); then
+        rx_rate=$(echo "scale=2; $rx_rate / 1024" | bc)
+        rx_unit="GB/s"
+    fi
+
+    # Convert TX rate to appropriate units (KB/s, MB/s, GB/s)
+    if (( $(echo "$tx_rate > 1024" | bc -l) )); then
+        tx_rate=$(echo "scale=2; $tx_rate / 1024" | bc)
+        tx_unit="KB/s"
+    fi
+    if (( $(echo "$tx_rate > 1024" | bc -l) )); then
+        tx_rate=$(echo "scale=2; $tx_rate / 1024" | bc)
+        tx_unit="MB/s"
+    fi
+    if (( $(echo "$tx_rate > 1024" | bc -l) )); then
+        tx_rate=$(echo "scale=2; $tx_rate / 1024" | bc)
+        tx_unit="GB/s"
+    fi
+
+    # Save current values for next iteration
+    echo "$rx_new" > "$1"
+    echo "$tx_new" > "$2"
+
+    # Return formatted output in appropriate units (B/s, KB/s, MB/s, GB/s)
+    echo " ${rx_rate}${rx_unit}  ${tx_rate}${tx_unit}"
 }
 
-
-# Main status bar update loop
 update_status() {
 
+    RX_FILE="$XDG_RUNTIME_DIR/.network_rx"
+    TX_FILE="$XDG_RUNTIME_DIR/.network_tx"
+    
+
     # Initialize RX and TX values
-    #rx_old=$(awk -v iface="$interface" '$1 ~ iface {print $2}' /proc/net/dev)
-    #tx_old=$(awk -v iface="$interface" '$1 ~ iface {print $10}' /proc/net/dev)
+    rx=$(awk -v iface="$interface" '$1 ~ iface {print $2}' /proc/net/dev)
+    tx=$(awk -v iface="$interface" '$1 ~ iface {print $10}' /proc/net/dev)
+    echo "$rx" > "$RX_FILE"
+    echo "$tx" > "$TX_FILE"
     
     while true
     do
@@ -117,9 +153,9 @@ update_status() {
         MEMORY=$(get_memory)
         CPU=$(get_cpu)
         WIFI=$(get_wifi)
-    #        NET_USAGE=$(get_network_usage)
+        NET_USAGE=$(get_network_usage "$RX_FILE" "$TX_FILE")
         
-        INFO=" $WIFI | $CPU | $MEMORY | $VOLUME | $BATTERY | $TIME"
+        INFO=" $NET_USAGE | $WIFI | $CPU | $MEMORY | $VOLUME | $BATTERY | $TIME"
         
         # Low battery warning
         BAT=$(echo "$BATTERY" | grep -o '[0-9]*')

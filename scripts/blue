@@ -2,3 +2,5 @@
 
 blueman-applet &
 blueman-manager & disown
+pavucontrol & disown
+

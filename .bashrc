@@ -88,6 +88,6 @@ alias blue='~/scripts/blue'
 # Alias for grep to use color
 alias grep='grep --color=auto'
 
-# Git bare
+# Alias for dotfiles' bare repo
 alias config='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
 
