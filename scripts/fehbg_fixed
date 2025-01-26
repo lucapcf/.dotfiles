@@ -1,4 +1,6 @@
 #!/bin/bash
 
-pkill -f .fehbg_slideshow
+kill "$(pgrep -f fehbg_ | grep -v '^'"$$"'$')" 2> /dev/null || :
+
 feh --no-fehbg --bg-fill /home/lucapcf/Wallpapers/fixed/*
+

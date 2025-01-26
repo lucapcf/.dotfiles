@@ -1,0 +1,18 @@
+#!/bin/bash
+
+# Kill any existing wallpaper script
+kill "$(pgrep -f fehbg_ | grep -v '^'"$$"'$')" 2> /dev/null || :
+
+update_wallpaper() {
+    while true; do
+      for image in $(echo /home/lucapcf/Wallpapers/slideshow/* | tr ' ' '\n' | sort); do
+            feh --no-fehbg --bg-fill "$image"
+            sleep 15
+        done
+    done
+}
+
+
+
+update_wallpaper &
+

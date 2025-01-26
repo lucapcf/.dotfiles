@@ -5,7 +5,7 @@
 # Executed by startx (run your window manager from here)
 
 # Redirect stdout and stderr to a log file
-exec &> ~/startx.log
+exec > ~/startx.log 2>&1
 
 # Keybinds (common to all WMs)
 xbindkeys &
@@ -22,7 +22,7 @@ case $session in
     xrandr --output eDP-1 --auto --left-of HDMI-1
 
     # Setting wallpaper
-    ~/scripts/.fehbg_fixed &
+    ~/scripts/fehbg_slideshow &
 
     # Lockscreen
     ~/xssstate/xsidle.sh slock &
